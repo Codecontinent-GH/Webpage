@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <link rel="stylesheet" href="Style11.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<!-- Dancing Elephant Animation -->
+<div class="dancing-elephant-container">
+    <div class="dancing-elephant" title="Dancing Elephant">
+        🐘
+    </div>
+</div>
+<!-- Random Fading Animals Animation -->
+<div id="random-animals"></div>
+<style>
+.dancing-elephant-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 38px;
+    margin-bottom: 18px;
+    pointer-events: none;
+    user-select: none;
+}
+.dancing-elephant {
+    font-size: 4.5rem;
+    filter: drop-shadow(0 4px 16px #30acb388);
+    animation: elephant-dance 1.2s infinite cubic-bezier(.5,1.6,.5,1) alternate;
+    will-change: transform;
+    display: inline-block;
+}
+@keyframes elephant-dance {
+    0%   { transform: rotate(-8deg) scale(1) translateY(0);}
+    15%  { transform: rotate(8deg) scale(1.07) translateY(-8px);}
+    30%  { transform: rotate(-10deg) scale(1.1) translateY(-12px);}
+    50%  { transform: rotate(10deg) scale(1.13) translateY(-16px);}
+    70%  { transform: rotate(-8deg) scale(1.09) translateY(-10px);}
+    85%  { transform: rotate(8deg) scale(1.04) translateY(-4px);}
+    100% { transform: rotate(-8deg) scale(1) translateY(0);}
+}
+/* Fading animal styles */
+.random-animal {
+    position: fixed;
+    z-index: 999;
+    font-size: 2.8rem;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0;
+    animation: animal-fade-move 3.2s linear forwards;
+    will-change: transform, opacity;
+    filter: drop-shadow(0 2px 12px #fff8);
+}
+@keyframes animal-fade-move {
+    0% {
+        opacity: 0;
+        transform: scale(0.7) translateY(0) rotate(-10deg);
+    }
+    10% {
+        opacity: 1;
+        transform: scale(1.1) translateY(-10px) rotate(8deg);
+    }
+    80% {
+        opacity: 1;
+        transform: scale(1.1) translateY(-30px) rotate(-8deg);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.7) translateY(-60px) rotate(10deg);
+    }
+}
+</style>
+
+<!-- Tap-to-show-text effect -->
+<style>
+.tap-text-box {
+        position: absolute;
+        min-width: 120px;
+        max-width: 220px;
+        padding: 10px 18px;
+        background: linear-gradient(120deg, #222831cc 60%, #30acb3cc 100%);
+        color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px #30acb355, 0 1px 8px #fff2;
+        font-size: 1.08rem;
+        font-family: 'Segoe UI', 'Segoe Script', cursive, sans-serif;
+        z-index: 9999;
+        pointer-events: none;
+        animation: tap-fade-in 0.22s, tap-float 1.8s cubic-bezier(.4,1.6,.6,1) forwards;
+        border: 2.5px solid #43e97b;
+        user-select: none;
+        transition: background 0.3s, border 0.3s;
+}
+@keyframes tap-fade-in {
+        from { opacity: 0; transform: scale(0.7);}
+        to { opacity: 1; transform: scale(1);}
+}
+@keyframes tap-float {
+        0% { opacity: 1; transform: translateY(0);}
+        80% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-40px) scale(0.92);}
+}
+</style>
+<script>
+const tapTexts = [
+        "✨ Keep Coding!", "🚀 Dream Big!", "🌈 Stay Inspired!", "💡 Think Different!", "🎨 Create Magic!",
+        "🔥 Never Give Up!", "🌟 Shine Bright!", "🪐 Explore More!", "💻 Code Everyday!", "🎯 Focus & Win!",
+        "📚 Keep Learning!", "🧠 Brain Power!", "🦄 Be Unique!", "🌻 Stay Positive!", "🎵 Enjoy the Flow!",
+        "🧩 Solve Problems!", "🌊 Go With Flow!", "🕹️ Play & Build!", "🍀 Good Luck!", "🛠️ Build Stuff!",
+        "🧑‍💻 Hello, World!", "🌍 Make Impact!", "📈 Grow Daily!", "🧲 Attract Success!", "💎 You’re Awesome!"
+];
+let tapIndex = 0;
+document.addEventListener('click', function(e) {
+        // Only show if click is on blank (not on form, button, input, textarea, a, video, etc)
+        const ignoreTags = ['INPUT','TEXTAREA','BUTTON','A','LABEL','VIDEO','SELECT','OPTION'];
+        if (ignoreTags.includes(e.target.tagName)) return;
+        // Don't show if clicking on form or its children
+        if (e.target.closest('#contactForm')) return;
+        // Don't show if clicking on footer or its children
+        if (e.target.closest('footer')) return;
+        // Don't show if clicking on .Lak or its children
+        if (e.target.closest('.Lak')) return;
+
+        const text = tapTexts[tapIndex % tapTexts.length];
+        tapIndex++;
+        const box = document.createElement('div');
+        box.className = 'tap-text-box';
+        box.innerHTML = text;
+        // Randomize background and border for new design each time
+        const colors = [
+                ['#30acb3', '#ff6f91'],
+                ['#43e97b', '#f9d423'],
+                ['#222831', '#43e97b'],
+                ['#ff6f91', '#30acb3'],
+                ['#f9d423', '#222831']
+        ];
+        const c = colors[Math.floor(Math.random()*colors.length)];
+        box.style.background = `linear-gradient(120deg, ${c[0]}cc 60%, ${c[1]}cc 100%)`;
+        box.style.borderColor = c[1];
+
+        // Position box at click, but keep inside viewport
+        const x = Math.min(e.clientX, window.innerWidth - 160);
+        const y = Math.min(e.clientY, window.innerHeight - 60);
+        box.style.left = x + 'px';
+        box.style.top = y + 'px';
+
+        document.body.appendChild(box);
+        setTimeout(()=>{ box.remove(); }, 1800);
+});
+
+// --- Random Fading Animals ---
+// Added more animals to the list
+const animalEmojis = [
+    "🦁","🐯","🐼","🦊","🐻","🐨","🐵","🦄","🐸","🐧","🐦","🐤","🐢","🐙","🦋","🐬","🦓","🦒","🦔","🦩","🦜","🦚","🦥","🦦","🦨","🦘","🦡","🦃","🦢","🦩","🦝","🦦","🦥","🦧","🦮","🐕‍🦺","🐩","🐕","🐈","🐅","🐆","🐊","🐘",
+    "🐊","🐍","🦎","🐲","🐉","🦕","🦖","🐳","🐋","🐟","🐠","🐡","🦈","🐙","🦑","🦐","🦞","🦀","🐚",
+    "🦦","🦥","🦨","🦘","🦡","🦃","🦢","🦩","🦝","🦦","🦥","🦧","🦮","🐕‍🦺","🐩","🐕","🐈","🐅","🐆","🐊","🐘",
+    "🐓","🐔","🐣","🐥","🦆","🦅","🦉","🦇","🐺","🐗","🐴","🦄","🐝","🐛","🦗","🕷️","🦂","🐞","🐜","🦟","🦠",
+    "🦦","🦥","🦨","🦘","🦡","🦃","🦢","🦩","🦝","🦦","🦥","🦧","🦮","🐕‍🦺","🐩","🐕","🐈","🐅","🐆","🐊","🐘",
+    "🦙","🦌","🐐","🐏","🐑","🐎","🐂","🐃","🐄","🐖","🐷","🐽","🐗","🐪","🐫","🦒","🦏","🦛","🐘","🦣"
+];
+function spawnRandomAnimal() {
+    const animal = animalEmojis[Math.floor(Math.random()*animalEmojis.length)];
+    const el = document.createElement('div');
+    el.className = 'random-animal';
+    el.textContent = animal;
+    // Random position (avoid edges)
+    const padding = 40;
+    const x = Math.random() * (window.innerWidth - padding*2) + padding;
+    const y = Math.random() * (window.innerHeight - padding*2) + padding;
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    // Random size
+    el.style.fontSize = (2.2 + Math.random()*2.5) + 'rem';
+    // Random animation duration
+    el.style.animationDuration = (2.6 + Math.random()*1.7) + 's';
+    // Optional: random rotation
+    el.style.transform += ` rotate(${Math.floor(Math.random()*40-20)}deg)`;
+    document.getElementById('random-animals').appendChild(el);
+    setTimeout(()=>{ el.remove(); }, 3500);
+}
+// Spawn animals at random intervals
+setInterval(()=>{
+    if (document.hidden) return;
+    spawnRandomAnimal();
+}, 1200);
+</script>
+
+
+<video autoplay loop muted playsinline style="position: fixed; right: 0; bottom: 0; min-width: 100vw; min-height: 100vh; z-index: -1; object-fit: cover;">
+    <source src="VideoBG11.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<div class="Lak">
+    <div class="CONTAINER spark-aura" style="border: 5px solid #cecece; padding: 1px 20px; pointer-events: none; user-select: none; width: fit-content; margin: 0 auto; border-radius: 20px; position: relative; overflow: visible;">
+        <span style="font-size: 2rem; vertical-align: middle; margin-right: 8px;">🌟</span>
+        <span style="font-family: 'Segoe Script', cursive; font-size: 2.2rem; background: linear-gradient(90deg, #30acb3 0%, #43e97b 50%, #ff6f91 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 2px 16px #fff3;">CodeContinent</span>
+        <span class="spark-aura-effect" style="pointer-events: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+           
+        </span>
+        <span style="position: absolute; top: -28px; right: -32px; font-size: 1.5rem; animation: float-emoji 2.5s infinite alternate;">🚀</span>
+        <span style="position: absolute; bottom: -28px; left: -32px; font-size: 1.5rem; animation: float-emoji2 2.5s infinite alternate;">🎨</span>
+    </div>
+    <style>
+    @keyframes float-emoji {
+        0% { transform: translateY(0) rotate(-10deg);}
+        100% { transform: translateY(-12px) rotate(10deg);}
+    }
+    @keyframes float-emoji2 {
+        0% { transform: translateY(0) rotate(10deg);}
+        100% { transform: translateY(12px) rotate(-10deg);}
+    }
+    .spark-aura-effect {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 120px;
+        height: 120px;
+        pointer-events: none;
+        z-index: 2;
+        border-radius: 50%;
+        opacity: 1;
+        animation: spark-aura-fadeout 2.5s infinite alternate;
+    }
+    .spark-aura-effect::before, .spark-aura-effect::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        opacity: 0.5;
+        pointer-events: none;
+        filter: blur(10px);
+        animation: spark-aura-pulse 1.5s infinite alternate;
+        z-index: 0;
+    }
+    .spark-aura-effect::before {
+        background: 
+        radial-gradient(circle at 30% 30%, #30acb3 60%, transparent 100%),
+        radial-gradient(circle at 80% 20%, #43e97b 30%, transparent 80%),
+        radial-gradient(circle at 20% 80%, #f9d423 40%, transparent 90%);
+        animation-delay: 0s;
+    }
+    .spark-aura-effect::after {
+        background: 
+        radial-gradient(circle at 70% 70%, #ff6f91 40%, #f9d423 80%, transparent 100%),
+        radial-gradient(circle at 50% 10%, #30acb3 20%, transparent 80%);
+        animation-delay: 0.7s;
+    }
+    /* Particle aura effect with emoji icons */
+    .spark-aura-effect .spark-particle {
+        position: absolute;
+        font-size: 1.5rem;
+        opacity: 0.85;
+        pointer-events: none;
+        z-index: 3;
+        animation: spark-particle-float 1.8s linear infinite;
+        filter: drop-shadow(0 0 6px #fff8);
+    }
+    .spark-aura-effect .spark-particle.p1 { left: 10px; top: 20px; animation-delay: 0s; }
+    .spark-aura-effect .spark-particle.p2 { left: 90px; top: 15px; animation-delay: 0.4s; }
+    .spark-aura-effect .spark-particle.p3 { left: 60px; top: 100px; animation-delay: 0.8s; }
+    .spark-aura-effect .spark-particle.p4 { left: 30px; top: 80px; animation-delay: 1.2s; }
+    .spark-aura-effect .spark-particle.p5 { left: 100px; top: 70px; animation-delay: 1.5s; }
+    @keyframes spark-particle-float {
+        0% {
+        opacity: 0.85;
+        transform: scale(1) translateY(0) rotate(0deg);
+        }
+        60% {
+        opacity: 1;
+        transform: scale(1.2) translateY(-12px) rotate(15deg);
+        }
+        100% {
+        opacity: 0;
+        transform: scale(0.7) translateY(-24px) rotate(-10deg);
+        }
+    }
+    @keyframes spark-aura-pulse {
+        0% {
+        opacity: 0.4;
+        transform: scale(1);
+        filter: blur(14px);
+        }
+        50% {
+        opacity: 0.6;
+        transform: scale(1.35);
+        filter: blur(22px);
+        }
+        100% {
+        opacity: 0.15;
+        transform: scale(1);
+        filter: blur(14px);
+        }
+    }
+    @keyframes spark-aura-fadeout {
+        0% {
+        opacity: 0.5;
+        }
+        80% {
+        opacity: 0.08;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+    </style>
+</div>
+<br>
+<div class="CONTAINER1 breathing-border" style=" border: 5px solid #30acb3; padding: 1px 20px; width: fit-content; margin: 0 auto; border-radius: 20px; background: rgba(34,40,49,0.85); box-shadow: 0 4px 32px #30acb355;">
+    <h1 style="color: #30acb3; text-align: center; letter-spacing: 1.2px;">
+        <span style="vertical-align: middle; font-size: 2rem; margin-right: 8px;">📬</span>
+        Contact Us
+    </h1>
+    <p style="color: blanchedalmond; font-style: italic; text-align: center;">
+        <span style="font-size: 1.2rem; margin-right: 6px;">💡</span>
+        We would love to hear from you! Please fill out the form below to get in touch with us.
+    </p>
+    <form id="contactForm">
+        <label for="name" style="color: aquamarine;">
+            <span style="font-size: 1.2rem; margin-right: 4px;">👤</span>
+            Name:
+        </label>
+        <input type="text" id="name" name="Name" placeholder="Your Name" required autocomplete="off">
+
+        <label for="phone" style="color: rgb(20, 255, 161);">
+            <span style="font-size: 1.2rem; margin-right: 4px;">📱</span>
+            Phone Number:
+        </label>
+        <input type="tel" id="phone" name="Phone" placeholder="Your Phone Number" required autocomplete="off">
+
+        <label for="email" style="color: deeppink;">
+            <span style="font-size: 1.2rem; margin-right: 4px;">✉️</span>
+            Email:
+        </label>
+        <input type="email" id="email" name="Email" placeholder="Your Email" required autocomplete="off">
+
+        <label for="message" class="CONTAINER">
+            <span style="font-size: 1.2rem; margin-right: 4px;">💬</span>
+            Message:
+        </label>
+        <textarea id="message" name="Message" rows="4" placeholder="Your Message" required></textarea><br>
+
+        <button type="submit" class="breathing-btn">
+            <span style="font-size: 1.2rem; vertical-align: middle;">🚀</span> Submit
+        </button>
+        <div id="form-success" style="display:none; color:#43e97b; text-align:center; margin-top:10px; font-weight:bold;">
+            <span style="font-size:1.3rem;">🎉</span> Thank you! We'll get back to you soon.
+        </div>
+    </form>
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var name = document.getElementById('name').value;
+            var phone = document.getElementById('phone').value;
+            var email = document.getElementById('email').value;
+            var message = document.getElementById('message').value;
+            var whatsappMessage = `Name: ${name}%0APhone: ${phone}%0AEmail: ${email}%0AMessage: ${message}`;
+            window.open(`https://wa.me/917679917252?text=${whatsappMessage}`, '_blank');
+            document.getElementById('form-success').style.display = 'block';
+            setTimeout(function() {
+                document.getElementById('form-success').style.display = 'none';
+                document.getElementById('contactForm').reset();
+            }, 3500);
+        });
+    </script>
+    <style>
+        .CONTAINER1 {
+            max-width: 400px;
+            width: 90%;
+            margin: 20px auto;
+            box-sizing: border-box;
+        }
+        #contactForm label, #contactForm input, #contactForm textarea, #contactForm button {
+            width: 100%;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        #contactForm input, #contactForm textarea {
+            padding-left: 8px;
+            padding-right: 8px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        #contactForm input:focus, #contactForm textarea:focus {
+            border: 1.5px solid #30acb3;
+            box-shadow: 0 0 8px #30acb3;
+            outline: none;
+        }
+        #contactForm button {
+            background: linear-gradient(90deg, #30acb3 0%, #ff6f91 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 12px #30acb355;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+        }
+        #contactForm button:hover {
+            background: linear-gradient(90deg, #43e97b 0%, #f9d423 100%);
+            box-shadow: 0 4px 24px #43e97b99;
+            transform: scale(1.05);
+        }
+        /* Breathing border animation */
+        .breathing-border {
+            animation: breathing-colors 3s infinite alternate;
+            border-width: 5px !important;
+            border-style: solid !important;
+        }
+        @keyframes breathing-colors {
+            0% {
+                border-color: #30acb3;
+                box-shadow: 0 0 10px 0 #30acb3;
+            }
+            25% {
+                border-color: #ff6f91;
+                box-shadow: 0 0 20px 2px #ff6f91;
+            }
+            50% {
+                border-color: #f9d423;
+                box-shadow: 0 0 30px 4px #f9d423;
+            }
+            75% {
+                border-color: #43e97b;
+                box-shadow: 0 0 20px 2px #43e97b;
+            }
+            100% {
+                border-color: #30acb3;
+                box-shadow: 0 0 10px 0 #30acb3;
+            }
+        }
+        /* Breathing button animation */
+        .breathing-btn {
+            animation: breathing-btn-colors 2.5s infinite alternate;
+        }
+        @keyframes breathing-btn-colors {
+            0% {
+                background-color: #30acb3;
+                box-shadow: 0 0 8px #30acb3;
+            }
+            50% {
+                background-color: #ff6f91;
+                box-shadow: 0 0 16px #ff6f91;
+            }
+            100% {
+                background-color: #30acb3;
+                box-shadow: 0 0 8px #30acb3;
+            }
+        }
+        @media (max-width: 600px) {
+            .CONTAINER1 {
+                padding: 10px;
+                border-width: 2px;
+            }
+            #contactForm button {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+        }
+    </style>
+</div>
+
+
+
+
+<footer style="text-align: center; color: #fff; background: linear-gradient(120deg, rgba(34,40,49,0.98) 70%, rgba(48,172,179,0.85) 100%); padding: 44px 0 28px 0; border-radius: 0 0 40px 40px; margin-top: 120px; font-size: 1.18rem; letter-spacing: 0.7px; position: relative; bottom: -40px; box-shadow: 0 8px 32px 0 rgba(48,172,179,0.25), 0 2px 24px 0 #222831; overflow: hidden; backdrop-filter: blur(8px);">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 22px; position: relative;">
+        <span style="font-size: 2rem; font-weight: 700; letter-spacing: 1.2px; background: linear-gradient(90deg, #30acb3 0%, #43e97b 50%, #ff6f91 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 2px 16px #fff3;">
+            <span style="vertical-align: middle;">👋</span> Hi, I'm <strong style="color: #f9d423; text-shadow: 0 1px 8px #fff8;">Code Continent</strong>
+        </span>
+        <span style="font-size: 1.08rem; color: #e0e0e0; font-style: italic;">
+            Thanks for stopping by! Stay inspired, stay modern, keep coding. 🚀
+        </span>
+        <div style="margin-top: 8px; display: flex; gap: 22px;">
+            <a href="https://wa.me/918327519972" target="_blank" style="transition: transform 0.2s;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 38px; height: 38px; border-radius: 12px; background: #fff; box-shadow: 0 2px 12px #30acb355; transition: box-shadow 0.2s;">
+            </a> 
+            <a href="https://youtube.com/@codecontinent?si=74nZwgER5Twdl0rp" target="_blank" style="transition: transform 0.2s;">
+                <img src="https://cdn.pixabay.com/photo/2021/05/22/11/38/yt-6273367_1280.png" alt="YouTube" style="width: 44px; height: 38px; border-radius: 12px; background: #fff; box-shadow: 0 2px 12px #ff6f9155; transition: box-shadow 0.2s;">
+            </a>
+            <a href="https://instagram.com/codecontinent" target="_blank" style="transition: transform 0.2s;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" style="width: 38px; height: 38px; border-radius: 12px; background: #fff; box-shadow: 0 2px 12px #f9d42355; transition: box-shadow 0.2s;">
+            </a>
+            
+        </div>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; align-items: center; gap: 6px;">
+            <span style="font-size: 1rem; color: #b2dfdb;">
+                &copy; <span id="year"></span> Code Continent. Made with <span style="color: #ff6f91;">&#10084;&#65039;</span>
+            </span>
+            <span style="font-size: 0.95rem; color: #ffd700b0;">
+                <span style="font-size:1.2em;">✨</span> Dream. Code. Inspire. <span style="font-size:1.2em;">🌈</span>
+            </span>
+        </div>
+        <!-- Animated sparkles -->
+        <div class="footer-sparkle">
+            <span class="sparkle s1">✨</span>
+            <span class="sparkle s2">💎</span>
+            <span class="sparkle s3">🪐</span>
+            <span class="sparkle s4">🌈</span>
+            <span class="sparkle s5">🔥</span>
+        </div>
+    </div>
+    <style>
+        @keyframes footerGlowModern {
+            0% { box-shadow: 0 0 24px 4px #30acb3, 0 2px 24px 0 #222831; }
+            50% { box-shadow: 0 0 48px 12px #ff6f91, 0 2px 24px 0 #222831; }
+            100% { box-shadow: 0 0 24px 4px #30acb3, 0 2px 24px 0 #222831; }
+        }
+        footer {
+            animation: footerGlowModern 3.5s infinite alternate;
+        }
+        footer a:hover img {
+            transform: scale(1.12) rotate(-3deg);
+            box-shadow: 0 4px 24px #43e97b99;
+        }
+        .footer-sparkle {
+            position: absolute;
+            left: 50%;
+            bottom: 18px;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 40px;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .footer-sparkle .sparkle {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.85;
+            pointer-events: none;
+            animation: sparkle-float 2.2s linear infinite;
+            filter: drop-shadow(0 0 6px #fff8);
+        }
+        .footer-sparkle .s1 { left: 10px; bottom: 0; animation-delay: 0s; }
+        .footer-sparkle .s2 { left: 50px; bottom: 8px; animation-delay: 0.5s; }
+        .footer-sparkle .s3 { left: 90px; bottom: 4px; animation-delay: 1s; }
+        .footer-sparkle .s4 { left: 120px; bottom: 10px; animation-delay: 1.3s; }
+        .footer-sparkle .s5 { left: 70px; bottom: 18px; animation-delay: 1.7s; }
+        @keyframes sparkle-float {
+            0% {
+                opacity: 0.85;
+                transform: scale(1) translateY(0) rotate(0deg);
+            }
+            60% {
+                opacity: 1;
+                transform: scale(1.2) translateY(-10px) rotate(15deg);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.7) translateY(-22px) rotate(-10deg);
+            }
+        }
+        @media (max-width: 600px) {
+            footer {
+                font-size: 1rem;
+                padding: 18px 0 10px 0;
+                border-radius: 0 0 16px 16px;
+            }
+            footer img {
+                width: 28px !important;
+                height: 28px !important;
+            }
+            .footer-sparkle {
+                width: 100px;
+                height: 28px;
+                bottom: 6px;
+            }
+            .footer-sparkle .sparkle {
+                font-size: 1.1rem;
+            }
+            footer div[style*="flex-direction: column"] {
+                gap: 10px !important;
+            }
+        }
+    </style>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</footer>
+</body>
+<script>
+let musicStarted = false;
+document.addEventListener('click', function playMusicOnce() {
+    if (!musicStarted) {
+        const audio = document.createElement('audio');
+        audio.src = "codecontinentBG.mp3";
+        audio.autoplay = true;
+        audio.loop = true;
+        audio.hidden = true;
+        document.body.appendChild(audio);
+        audio.play();
+        musicStarted = true;
+        document.removeEventListener('click', playMusicOnce);
+    }
+}, { once: true });
+</script>
+</html>
